@@ -17,7 +17,7 @@ namespace CommunicationBusLib
 
         public string ConvertFromXml(string request)
         {
-            // kako izgleda GET /resource/1 ???
+            // kako izgleda GET /resource/1  -> query ???
             
             /*
             StringBuilder sqlQuery = new StringBuilder();
