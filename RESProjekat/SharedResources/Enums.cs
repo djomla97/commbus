@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharedResources
-{    
+﻿namespace SharedResources
+{
     public enum Status
     {
         BAD_FORMAT,
@@ -13,7 +7,7 @@ namespace SharedResources
         SUCCESS
     }
 
-    public enum StatusCodes
+    public enum StatusCode
     {
         BAD_FORMAT_CODE = 5000,
         SUCCESS_CODE = 2000,
