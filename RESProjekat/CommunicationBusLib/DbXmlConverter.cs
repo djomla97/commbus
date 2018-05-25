@@ -19,6 +19,8 @@ namespace CommunicationBusLib
         {
             // kako izgleda GET /resource/1  -> query ???
             
+            //get /resurs/1
+
             /*
             StringBuilder sqlQuery = new StringBuilder();
 
