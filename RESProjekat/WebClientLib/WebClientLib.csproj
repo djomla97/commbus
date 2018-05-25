@@ -44,9 +44,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommunicationBusLib\CommunicationBusLib.csproj">
+      <Project>{12fa1918-1079-415e-97ea-3c58cf184bd8}</Project>
+      <Name>CommunicationBusLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedResources\SharedResources.csproj">
+      <Project>{ad8b6608-765b-4936-9843-c89526b77157}</Project>
+      <Name>SharedResources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

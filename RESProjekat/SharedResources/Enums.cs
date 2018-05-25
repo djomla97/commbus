@@ -1,5 +1,6 @@
 ﻿namespace SharedResources
-{
+{   
+
     public enum Status
     {
         BAD_FORMAT,

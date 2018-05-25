@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SharedResources;
-using System.Text;
+using SharedResources.Interfaces;
 using System.Xml;
 
 namespace CommunicationBusLib

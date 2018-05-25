@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationBusLib", "CommunicationBusLib\CommunicationBusLib.csproj", "{12FA1918-1079-415E-97EA-3C58CF184BD8}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryLib", "RepositoryLib\RepositoryLib.csproj", "{A41BD43C-B72C-49AA-A219-7649FDE07F99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedResources", "SharedResources\SharedResources.csproj", "{AD8B6608-765B-4936-9843-C89526B77157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientConsoleApp", "ClientConsoleApp\ClientConsoleApp.csproj", "{7C0C1310-BA88-404C-A48A-44FF2DFB6055}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AD8B6608-765B-4936-9843-C89526B77157}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD8B6608-765B-4936-9843-C89526B77157}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD8B6608-765B-4936-9843-C89526B77157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C0C1310-BA88-404C-A48A-44FF2DFB6055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C0C1310-BA88-404C-A48A-44FF2DFB6055}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C0C1310-BA88-404C-A48A-44FF2DFB6055}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C0C1310-BA88-404C-A48A-44FF2DFB6055}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
