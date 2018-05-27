@@ -10,6 +10,11 @@ namespace CommunicationBusLib
 {
     public class JsonXmlConverter
     {
+        public JsonXmlConverter()
+        {
+
+        }
+
         public string ConvertFromXml(string xml)
         {
             string json = "";
