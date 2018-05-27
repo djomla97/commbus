@@ -9,7 +9,7 @@ namespace ClientConsoleApp
         {
             IWebClient webClient = new WebClient();
 
-            string jsonQuery = "{ \" name\" = \" pera \", \" type\" = \" 1 \" }";
+            string jsonQuery = "{ \" name\" = \" pera \", \" type\" = \" 1 \", \" fields\" = \" id, title, name \"}";
 
             Console.WriteLine(webClient.SendRequest("GET /resource" + " " + jsonQuery));
 

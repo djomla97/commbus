@@ -8,7 +8,6 @@ namespace WebClientLib
 {
     public class WebClient : IWebClient
     {
-        // TODO: implementirati i za Fields jos
 
         public WebClient()
         {
@@ -116,6 +115,34 @@ namespace WebClientLib
 
                     for (int i = 0; i < queries.Length; i++)
                     {
+                        // fields se prvo naidje na fields
+                        // a zatim ide redom kroz queries da bi dobili sve fields jer su razdvojeni
+                        // ide sve dok ne naidje na " jer je to kraj u json 
+                        if (queries[i].Contains("fields"))
+                        {
+                            parsedRequest.Fields += queries[i].Split('=')[1].Replace("\"", "");
+                            i++;
+
+                            for (int j = i; j < queries.Length; j++)
+                            {
+
+                                if (queries[j].Contains("\""))
+                                {
+                                    parsedRequest.Fields += $";{queries[j].Replace("\"", "")}";
+                                    i++;
+                                    break;
+                                }
+
+                                parsedRequest.Fields += $";{queries[j]}";
+                                i++;
+                            }
+                        }
+
+                        // i sam gore povecavao da bi preskocio te delove ovde
+                        // pa ako je kraj onda je kraj
+                        if (i >= queries.Length)
+                            break;
+
                         if (queries[i].Any(char.IsDigit))
                         {
                             // "type" = "1" -> type=1
@@ -138,15 +165,23 @@ namespace WebClientLib
 
                     // ako uspesno parsira onda sacuvaj u Query
                     // isto kao sa specifikacije odradjeno, nema ; na kraju
-                    for(int i = 0; i < parsedQueries.Length; i++)
+                    for (int i = 0; i < parsedQueries.Length; i++)
                     {
-                        if(i != parsedQueries.Length-1)
+                        if (parsedQueries[i] != null)
                         {
-                            parsedRequest.Query += parsedQueries[i] + ";";
+                            if (i != parsedQueries.Length - 1)
+                            {
+                                parsedRequest.Query += parsedQueries[i] + ";";
+                            }
+                            else
+                            {
+                                parsedRequest.Query += parsedQueries[i];
+                            }
                         }
                         else
                         {
-                            parsedRequest.Query += parsedQueries[i];
+                            parsedRequest.Query = parsedRequest.Query.Remove(parsedRequest.Query.Length - 1, 1); // ukloni ; sa kraja
+                            break;
                         }
                     }
 
@@ -157,8 +192,6 @@ namespace WebClientLib
                     parsedRequest.Query = null;
                     parsedRequest.Fields = null;
                 }
-
-                
             }
 
             return parsedRequest;
