@@ -143,23 +143,62 @@ namespace WebClientLib
                         if (i >= queries.Length)
                             break;
 
-                        if (queries[i].Any(char.IsDigit))
+                        // za connectedTo ako postoji
+                        if (queries[i].Contains("connectedTo") || queries[i].Contains("connectedType"))
                         {
-                            // "type" = "1" -> type=1
-                            string[] temp = queries[i].Split('=');
-                            temp[0] = temp[0].Replace("\"", "");
-                            temp[1] = temp[1].Replace("\"", "");
 
-                            parsedQueries[i] = temp[0] + "=" + temp[1];
+                            parsedQueries[i] += queries[i].Split('=')[0].Replace("\"", "");
+                            parsedQueries[i] += $"='id={queries[i].Split('=')[1].Replace("\"", "")}";
+                            int m = i;
+                            m++;
+
+                            for (int j = m; j < queries.Length; j++)
+                            {
+
+                                if (queries[j].Contains("\""))
+                                {
+                                    parsedQueries[i] += $";id={queries[j].Replace("\"", "")}'";
+                                    m++;
+                                    break;
+                                }
+
+                                parsedQueries[i] += $";id={queries[j]}";
+                                m++;
+                            }
+
+                            i = m;
+                        }
+
+                        // i sam gore povecavao da bi preskocio te delove ovde
+                        // pa ako je kraj onda je kraj
+                        if (i >= queries.Length)
+                            break;
+
+                        if (!queries[i].Contains("connectedTo") && !queries[i].Contains("connectedType") && !queries[i].Contains("fields"))
+                        {
+                            if (queries[i].Any(char.IsDigit))
+                            {
+                                // "type" = "1" -> type=1
+                                string[] temp = queries[i].Split('=');
+                                temp[0] = temp[0].Replace("\"", "");
+                                temp[1] = temp[1].Replace("\"", "");
+
+                                parsedQueries[i] = temp[0] + "=" + temp[1];
+                            }
+                            else
+                            {
+                                // "name" = "pera" -> name='pera'
+                                string[] temp = queries[i].Split('=');
+                                temp[0] = temp[0].Replace("\"", "");
+                                temp[1] = temp[1].Replace('"', '\'');
+
+                                parsedQueries[i] = temp[0] + "=" + temp[1];
+                            }
                         }
                         else
                         {
-                            // "name" = "pera" -> name='pera'
-                            string[] temp = queries[i].Split('=');
-                            temp[0] = temp[0].Replace("\"", "");
-                            temp[1] = temp[1].Replace('"', '\'');
-
-                            parsedQueries[i] = temp[0] + "=" + temp[1];
+                            i--;
+                            continue;
                         }
                     }
 
@@ -167,6 +206,10 @@ namespace WebClientLib
                     // isto kao sa specifikacije odradjeno, nema ; na kraju
                     for (int i = 0; i < parsedQueries.Length; i++)
                     {
+                        if(parsedQueries[i] == null && i != parsedQueries.Length-1) {
+                            continue;
+                        }
+
                         if (parsedQueries[i] != null)
                         {
                             if (i != parsedQueries.Length - 1)
