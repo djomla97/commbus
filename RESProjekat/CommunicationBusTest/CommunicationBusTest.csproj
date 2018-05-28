@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbXmlConverterTest.cs" />
     <Compile Include="JsonXmlTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,6 +60,10 @@
     <ProjectReference Include="..\CommunicationBusLib\CommunicationBusLib.csproj">
       <Project>{12FA1918-1079-415E-97EA-3C58CF184BD8}</Project>
       <Name>CommunicationBusLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedResources\SharedResources.csproj">
+      <Project>{ad8b6608-765b-4936-9843-c89526b77157}</Project>
+      <Name>SharedResources</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
