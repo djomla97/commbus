@@ -2,11 +2,11 @@
 
 namespace SharedResources
 {
-    public class Type : IType
+    public class ResourceType : IType
     {
         public int ID { get; set; }
         public string Title { get; set; }
 
-        public Type() { }
+        public ResourceType() { }
     }
 }

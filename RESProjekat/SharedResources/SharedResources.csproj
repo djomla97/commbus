@@ -54,7 +54,7 @@
     <Compile Include="Request.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="Response.cs" />
-    <Compile Include="Type.cs" />
+    <Compile Include="ResourceType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using SharedResources.Interfaces;
+using System;
+using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace CommunicationBusLib
 {
@@ -9,53 +12,180 @@ namespace CommunicationBusLib
         public string ConvertToXml(IResponse response)
         {
             string jsonResponse = JsonConvert.SerializeObject(response);
-            XmlDocument xmlResponse = (XmlDocument)JsonConvert.DeserializeXmlNode(jsonResponse);
+            XNode xmlResponse = JsonConvert.DeserializeXNode(jsonResponse, "Response");
 
-            return xmlResponse.ToString();
+            return xmlResponse.ToString(); // ovo ima \r\n  i tabove (zapravo 2 space-a)
         }
 
         public string ConvertFromXml(string request)
         {
-            // kako izgleda GET /resource/1  -> query ???
-            
-            //get /resurs/1
+            StringBuilder sqlRequest = new StringBuilder();
+            request = request.Replace("\r\n", "");
+            request = request.Replace(" ", "");
 
-            /*
-            StringBuilder sqlQuery = new StringBuilder();
 
-            // METHOD
-            int firstIndexOfVerb = request.IndexOf("<verb>");
+            // pozicije stringova
+            int firstIndexOfVerb = request.IndexOf("<verb>") + 6;
             int lastIndexOfVerb = request.IndexOf("</verb>");
 
-            string method = request.Substring(firstIndexOfVerb + 6, lastIndexOfVerb - firstIndexOfVerb);
-
-            // WHERE
-            int firstIndexOfNoun = request.IndexOf("<noun>");
+            int firstIndexOfNoun = request.IndexOf("<noun>") + 6;
             int lastIndexOfNoun = request.IndexOf("</noun>");
 
-            string whereQuery = request.Substring(firstIndexOfNoun + 6, lastIndexOfNoun - firstIndexOfNoun);
+            // mozda nije unet query ili fields
+            bool foundQuery = false;
+            bool foundFields = false;
+     
+            int firstIndexOfQuery = request.IndexOf("<query>");
+            int lastIndexOfQuery = request.IndexOf("</query>");
 
-            string[] whereQueryParsed = whereQuery.Split('/');
-            
-            
-            switch (method)
+            if (firstIndexOfQuery != -1 || lastIndexOfQuery != -1)
+            {
+                firstIndexOfQuery += 7;
+                foundQuery = true;
+            }
+
+            int firstIndexOfFields = request.IndexOf("<fields>");
+            int lastIndexOfFields = request.IndexOf("</fields>");
+
+            if (firstIndexOfFields != -1 || lastIndexOfFields != -1)
+            {
+                firstIndexOfFields += 8;
+                foundFields = true;
+            }
+
+            // vrednosti polja
+            string verb = request.Substring(firstIndexOfVerb , lastIndexOfVerb - firstIndexOfVerb);
+            string noun = request.Substring(firstIndexOfNoun, lastIndexOfNoun - firstIndexOfNoun);
+            string table = noun.Split('/')[1];
+
+            string query = string.Empty;
+            string[] queries = null;
+            string fields = string.Empty;
+
+            if (foundQuery)
+            {
+                query = request.Substring(firstIndexOfQuery, lastIndexOfQuery - firstIndexOfQuery);
+                queries = query.Split(';');
+            }
+
+            if (foundFields)
+            {
+                fields = request.Substring(firstIndexOfFields, lastIndexOfFields - firstIndexOfFields);
+                fields = fields.Replace(";", ",");
+            }
+
+
+            string id = string.Empty;
+            // konacne komande
+            switch (verb)
             {
                 case "GET":
-                    sqlQuery.Append("SELECT ");
+                    if (foundFields)
+                    {
+                        sqlRequest.Append($"SELECT {fields} FROM {table} ");
+
+                        if (foundQuery)
+                        {
+                            sqlRequest.Append("WHERE ");
+                            for (int i = 0; i < queries.Length; i++)
+                            {
+                                if (i == queries.Length - 1)
+                                    sqlRequest.Append($"{queries[i]};");
+                                else
+                                    sqlRequest.Append($"{queries[i]} AND ");
+                            }
+                        }
+                        else
+                        {
+                            id = noun.Split('/')[2];
+                            sqlRequest.Append($"WHERE id={id};");
+                        }
+                    }
+                    else
+                    {
+                        sqlRequest.Append($"SELECT * FROM {table} ");
+
+                        if (foundQuery)
+                        {
+                            sqlRequest.Append("WHERE ");
+                            for (int i = 0; i < queries.Length; i++)
+                            {
+                                if (i == queries.Length - 1)
+                                    sqlRequest.Append($"{queries[i]};");
+                                else
+                                    sqlRequest.Append($"{queries[i]} AND ");
+                            }
+                        }
+                        else
+                        {
+                            id = noun.Split('/')[2];
+                            sqlRequest.Append($"WHERE id={id};");
+                        }
+                    }
+
                     break;
+
                 case "POST":
-                    sqlQuery.Append("INSERT INTO resources");
+                    sqlRequest.Append($"INSERT INTO {table} (");
+                    for(int i = 0; i < queries.Length; i++)
+                    {
+                        if(i == queries.Length - 1)
+                            sqlRequest.Append($"{queries[i].Split('=')[0]})");
+                        else
+                            sqlRequest.Append($"{queries[i].Split('=')[0]}, ");
+                    }
+
+                    sqlRequest.Append(" VALUES (");
+                    for (int i = 0; i < queries.Length; i++)
+                    {
+                        if (i == queries.Length - 1)
+                            sqlRequest.Append($"{queries[i].Split('=')[1]});");
+                        else
+                            sqlRequest.Append($"{queries[i].Split('=')[1]}, ");
+                    }
+
                     break;
+
                 case "PATCH":
-                    sqlQuery.Append("UPDATE resources SET ");
+                    sqlRequest.Append($"UPDATE {table} SET ");
+                    for (int i = 0; i < queries.Length; i++)
+                    {
+                        if (i == queries.Length - 1)
+                            sqlRequest.Append($"{queries[i]} WHERE ");
+                        else
+                            sqlRequest.Append($"{queries[i]}, ");
+                    }
+                    id = noun.Split('/')[2];
+                    sqlRequest.Append($"id={id};");
+
                     break;
+
                 case "DELETE":
-                    sqlQuery.Append("DELETE FROM resources ");
+                    try
+                    {
+                        id = noun.Split('/')[2];
+                        sqlRequest.Append($"DELETE FROM {table} WHERE id={id};");
+                    }
+                    catch (Exception)
+                    {
+                        sqlRequest.Append($"DELETE FROM {table} WHERE ");
+                        for (int i = 0; i < queries.Length; i++)
+                        {
+                            if (i == queries.Length - 1)
+                                sqlRequest.Append($"{queries[i]};");
+                            else
+                                sqlRequest.Append($"{queries[i]} AND ");
+                        }
+                    }
+
+                    break;
+
+                default:
+                    //sqlRequest.Append("test");
                     break;
             }
-            */
-
-            return "";
+            
+            return sqlRequest.ToString();
         }
     }
 }

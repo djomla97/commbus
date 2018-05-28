@@ -18,11 +18,19 @@ namespace WebClientLib
         ///     Sends a request to a repository and retrieves a JSON response
         /// </summary>
         /// <param name="request">user defined request</param>
-        /// <returns></returns>
+        /// <returns>JSON response</returns>
         public string SendRequest(string request)
         {
             // GET /resource/1
             // ili GET /resource { "name"="pera", "type"="2", connectedTo="4" }
+
+            // POST /resource { podaci u json kao gore }
+
+            // PATCH /resource/2 { novi podaci }
+
+            // DELETE /resource { json podaci }
+            // ili 
+            // DELETE /resource/4 
 
             IRequest requestParsed = ParseRequest(request);
             IResponse responseObject = new Response();
@@ -60,7 +68,7 @@ namespace WebClientLib
                         responseObject.Payload.ErrorMessage = "Method not supported. Must be GET, POST, PATCH or DELETE";
                         responseObject.Status = Status.BAD_FORMAT.ToString();
                         responseObject.StatusCode = StatusCode.BAD_FORMAT_CODE;
-                    }
+                    }                    
                 }
             }
 
@@ -80,20 +88,53 @@ namespace WebClientLib
             string[] requestSplit = requestToParse.Split(' ');
 
             // uzmemo metodu i ime tabele
-            string method = requestSplit[0];
-            string table = requestSplit[1];
+            string method = string.Empty;
+            string table = string.Empty;
+            try
+            {
+                method = requestSplit[0];
+                table = requestSplit[1];
+            }
+            catch (Exception)
+            {
+                return parsedRequest;
+            }
 
             // postavimo metodu u request objekat
             parsedRequest.Verb = method;
             parsedRequest.Noun = table;
 
+            bool canParseQuery = false;
+
             // ukoliko imamo ID onda nemamo dodatne filtere
             if (table.Any(char.IsDigit))
             {
-                parsedRequest.Query = null;
-                parsedRequest.Fields = null;
+                if (method == "PATCH")
+                {
+                    parsedRequest.Fields = null;
+                    canParseQuery = true;
+                }
+                else
+                {
+                    parsedRequest.Query = null;
+                    parsedRequest.Fields = null;
+                }
             }
             else
+            {
+                if (method == "PATCH")
+                {
+                    parsedRequest.Verb = null;
+                    parsedRequest.Noun = null;
+                    parsedRequest.Query = null;
+                    parsedRequest.Fields = null;
+                    return parsedRequest;
+                }
+
+                canParseQuery = true;
+            }
+            
+            if(canParseQuery)
             {
                 try
                 {
@@ -206,7 +247,8 @@ namespace WebClientLib
                     // isto kao sa specifikacije odradjeno, nema ; na kraju
                     for (int i = 0; i < parsedQueries.Length; i++)
                     {
-                        if(parsedQueries[i] == null && i != parsedQueries.Length-1) {
+                        if (parsedQueries[i] == null && i != parsedQueries.Length - 1)
+                        {
                             continue;
                         }
 
