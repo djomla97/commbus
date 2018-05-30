@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientConsoleApp", "ClientC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationBusTest", "CommunicationBusTest\CommunicationBusTest.csproj", "{56FCD402-6CD1-498C-9CBD-3D3CF40EB40D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClientLib.Tests", "WebClientLib.Tests\WebClientLib.Tests.csproj", "{44E53F31-9160-4DA9-8C34-F674C0964682}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{56FCD402-6CD1-498C-9CBD-3D3CF40EB40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56FCD402-6CD1-498C-9CBD-3D3CF40EB40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56FCD402-6CD1-498C-9CBD-3D3CF40EB40D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44E53F31-9160-4DA9-8C34-F674C0964682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44E53F31-9160-4DA9-8C34-F674C0964682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44E53F31-9160-4DA9-8C34-F674C0964682}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44E53F31-9160-4DA9-8C34-F674C0964682}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
