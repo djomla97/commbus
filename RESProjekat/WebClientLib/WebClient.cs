@@ -3,15 +3,17 @@ using SharedResources;
 using SharedResources.Interfaces;
 using System;
 using System.Linq;
+using CommunicationBusLib;
 
 namespace WebClientLib
 {
     public class WebClient : IWebClient
     {
-
+        private CommunicationBus communicationBus = null;
+        
         public WebClient()
         {
-
+            communicationBus = new CommunicationBus();
         }
 
         /// <summary>
@@ -35,15 +37,16 @@ namespace WebClientLib
             IRequest requestParsed = ParseRequest(request);
             IResponse responseObject = new Response();
 
-            // provere da li je dobro unesen zahtev
 
+            // provere da li je dobro unesen zahtev
             if (requestParsed.Noun == null)
             {
                 responseObject.Payload = new Payload();
                 responseObject.Payload.Resource = null;
-                responseObject.Payload.ErrorMessage = "Noun is not valid.";
+                responseObject.Payload.ErrorMessage = "Request is not valid.";
                 responseObject.Status = Status.BAD_FORMAT.ToString();
                 responseObject.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                return JsonConvert.SerializeObject(responseObject);
             }
             else
             {
@@ -54,9 +57,10 @@ namespace WebClientLib
                     {
                         responseObject.Payload = new Payload();
                         responseObject.Payload.Resource = null;
-                        responseObject.Payload.ErrorMessage = "Method not supported. Must be POST or DELETE";
+                        responseObject.Payload.ErrorMessage = "Method not supported.";
                         responseObject.Status = Status.BAD_FORMAT.ToString();
                         responseObject.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                        return JsonConvert.SerializeObject(responseObject);
                     }
                 }
                 else if (requestParsed.Noun.Contains("resource"))
@@ -65,21 +69,26 @@ namespace WebClientLib
                     {
                         responseObject.Payload = new Payload();
                         responseObject.Payload.Resource = null;
-                        responseObject.Payload.ErrorMessage = "Method not supported. Must be GET, POST, PATCH or DELETE";
+                        responseObject.Payload.ErrorMessage = "Method not supported.";
                         responseObject.Status = Status.BAD_FORMAT.ToString();
                         responseObject.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                        return JsonConvert.SerializeObject(responseObject);
                     }                    
                 }
             }
 
-            string jsonFormat = JsonConvert.SerializeObject(requestParsed); // ovde vraca Request jer testiramo jos
 
+            // serialize u JSON, pa posalji
+            string jsonFormat = JsonConvert.SerializeObject(requestParsed); 
+
+            //string response = communicationBus.SendCommand(jsonFormat);
+            
             return jsonFormat;
         }
 
 
         // helper za parsiranje zahteva u konacan JSON oblik za slanje na CommunicationBus
-        private IRequest ParseRequest(string requestToParse)
+        public IRequest ParseRequest(string requestToParse)
         {
             Request parsedRequest = new Request();
 

@@ -2,7 +2,6 @@
 using SharedResources.Interfaces;
 using System;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace CommunicationBusLib
@@ -53,7 +52,7 @@ namespace CommunicationBusLib
                 foundFields = true;
             }
 
-            // vrednosti polja
+            // vrednosti polja             
             string verb = request.Substring(firstIndexOfVerb , lastIndexOfVerb - firstIndexOfVerb);
             string noun = request.Substring(firstIndexOfNoun, lastIndexOfNoun - firstIndexOfNoun);
             string table = noun.Split('/')[1];
