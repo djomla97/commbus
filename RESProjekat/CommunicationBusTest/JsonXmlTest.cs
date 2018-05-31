@@ -12,28 +12,29 @@ namespace CommunicationBusTest
     public class JsonXmlTest
     {
 
-        private static string OcekivaniXml = "<request>    <verb> GET </verb>    <noun>/ resurs / 1 </noun>    <query> name = 'pera'; type=1</query>    <fields>id; name; surname</fields> </request>";
-        private static string OcekivaniJson = "{     \"verb\": \"GET\",     \"noun\": \"/resurs/1\",     \"query\": \"name='pera'; type=1\",     \"fields\": \"id; name; surname\" }";
+        private static string OcekivaniXml = "<request>\r\n  <verb>GET</verb>\r\n  <noun>/resurs/1</noun>\r\n  <query>name='pera';type=1</query>\r\n  <fields>id;name;surname</fields>\r\n</request>";
+        private static string OcekivaniJson = "{\"request\":{\"verb\":\"GET\",\"noun\":\"/resurs/1\",\"query\":\"name='pera';type=1\",\"fields\":\"id;name;surname\"}}";
+
 
         [Test]
-        [TestCase("<request>    <verb>GET</verb>    <noun>/resurs/1</noun>    <query>name='pera';type=1</query>    <fields>id; name; surname</fields> </request> ")]
+        [TestCase("<request><verb>GET</verb><noun>/resurs/1</noun><query>name='pera';type=1</query><fields>id;name;surname</fields></request>")]
         public void CovenrtFromXmlDobar(string xml)
         {
             JsonXmlConverter jsonXml = new JsonXmlConverter();
             string json = jsonXml.ConvertFromXml(xml);
 
-            Assert.AreEqual(json.Trim(), OcekivaniJson.Trim());
+            Assert.AreEqual(json, OcekivaniJson);
         }
 
-
+        //dovrsiti
         [Test]
-        [TestCase("{     \"verb\": \"GET\",     \"noun\": \"/resurs/1\",     \"query\": \"name='pera'; type=1\",     \"fields\": \"id; name; surname\" }")]
+        [TestCase("{\"request\":{\"verb\":\"GET\",\"noun\":\"/resurs/1\",\"query\":\"name='pera';type=1\",\"fields\":\"id;name;surname\"}}")]
         public void CovenrtToXmlDobar(string json)
         {
             JsonXmlConverter xmlConverter = new JsonXmlConverter();
             string xml = xmlConverter.ConvertToXml(json);
 
-            Assert.AreEqual(xml.Trim(), OcekivaniXml.Trim());
-        }
+            Assert.AreEqual(xml, OcekivaniXml);
+        } 
     }
 }
