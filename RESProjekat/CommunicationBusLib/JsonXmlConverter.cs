@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace CommunicationBusLib
 {
@@ -27,10 +28,14 @@ namespace CommunicationBusLib
         }
         public string ConvertToXml(string json)
         {
-            XmlDocument xmlDocument = (XmlDocument)JsonConvert.DeserializeXmlNode(json);
-            string xml = xmlDocument.ToString();
+          //  XmlDocument xmlDocument = (XmlDocument)JsonConvert.DeserializeXmlNode(json);
+          //  string xml = xmlDocument.ToString();
 
-            return xml;
+            XNode xmlResponse = JsonConvert.DeserializeXNode(json);
+
+            return xmlResponse.ToString();
+
+         //   return xml;
         }
     }
 }
