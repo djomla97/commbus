@@ -1,6 +1,6 @@
 ﻿namespace SharedResources.Interfaces
 {
-    public class IResource
+    public interface IResource
     {  
         int ID { get; set; }
         string Title { get; set; }
