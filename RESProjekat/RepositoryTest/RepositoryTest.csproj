@@ -6,18 +6,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7C0C1310-BA88-404C-A48A-44FF2DFB6055}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ClientConsoleApp</RootNamespace>
-    <AssemblyName>ClientConsoleApp</AssemblyName>
+    <ProjectGuid>{E0F41D49-DF1B-4788-A930-86B4723ADA22}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RepositoryTest</RootNamespace>
+    <AssemblyName>RepositoryTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -27,7 +26,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -49,17 +47,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WebClientLib\WebClientLib.csproj">
-      <Project>{04b00183-974a-4a69-94c6-6631039256ac}</Project>
-      <Name>WebClientLib</Name>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RepositoryLib\RepositoryLib.csproj">
+      <Project>{A41BD43C-B72C-49AA-A219-7649FDE07F99}</Project>
+      <Name>RepositoryLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedResources\SharedResources.csproj">
+      <Project>{AD8B6608-765B-4936-9843-C89526B77157}</Project>
+      <Name>SharedResources</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
