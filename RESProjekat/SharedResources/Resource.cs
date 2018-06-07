@@ -11,5 +11,10 @@ namespace SharedResources
         public IType Type { get; set; }
 
         public Resource() { }
+
+        public Resource(ResourceType type)
+        {
+            Type = type;
+        }
     }
 }
