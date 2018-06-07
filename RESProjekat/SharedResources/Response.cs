@@ -9,5 +9,12 @@ namespace SharedResources
         public StatusCode StatusCode { get; set; }
 
         public Response() { }
+
+        public Response(IPayload payload, Status status, StatusCode statusCode)
+        {
+            this.Payload = payload;
+            this.Status = status.ToString();
+            this.StatusCode = statusCode;
+        }
     }
 }

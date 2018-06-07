@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClientLib.Tests", "WebCl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryTest", "RepositoryTest\RepositoryTest.csproj", "{E0F41D49-DF1B-4788-A930-86B4723ADA22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedResources.Tests", "SharedResources.Tests\SharedResources.Tests.csproj", "{B25530EF-051B-4B0E-BBF4-96E125C62FD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{E0F41D49-DF1B-4788-A930-86B4723ADA22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0F41D49-DF1B-4788-A930-86B4723ADA22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0F41D49-DF1B-4788-A930-86B4723ADA22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B25530EF-051B-4B0E-BBF4-96E125C62FD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B25530EF-051B-4B0E-BBF4-96E125C62FD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B25530EF-051B-4B0E-BBF4-96E125C62FD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B25530EF-051B-4B0E-BBF4-96E125C62FD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

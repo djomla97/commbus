@@ -14,8 +14,11 @@ namespace CommunicationBusLib
         private static JsonXmlConverter jsonXmlConverter;
         private static DbXmlConverter dbXmlConverter;
         private static IResponse response;
-        private static Repository repository = new Repository();
+        
+        // padaju testovi za WebClient-a 
+        //private static Repository repository = new Repository();
 
+        /*
         public string SendCommand (string command)
         {
             jsonXmlConverter = new JsonXmlConverter();
@@ -28,7 +31,7 @@ namespace CommunicationBusLib
             string json;
 
             //saljemo sql zahtev ka bazi podataka
-            response = repository.DoQuery(sql);
+            //response = repository.DoQuery(sql);
 
             //pretvaramo response u Xml
             
@@ -40,7 +43,7 @@ namespace CommunicationBusLib
             return json;
 
         }
-
+        */
         
     }
 }

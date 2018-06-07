@@ -16,5 +16,13 @@ namespace SharedResources
         {
 
         }
+
+        public Request(string verb, string noun, string query, string fields)
+        {
+            this.Verb = verb;
+            this.Noun = noun;
+            this.Query = query;
+            this.Fields = fields;
+        }
     }
 }
