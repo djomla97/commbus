@@ -18,9 +18,10 @@ namespace RepositoryTest
         {
             Repository repository = new Repository();
 
-            Response response =  repository.DoQuery("SELECT * FROM ResourcesTable") as Response;
+            List<Response> response =  repository.DoQuery("SELECT * FROM resource");
 
-            Assert.AreEqual("nekiname", response.Payload.Resource.Name);
+            Assert.AreEqual("Pera",response[0].Payload.Resource.Name);
+            Assert.AreEqual("Djoka", response[1].Payload.Resource.Name);
         }
     }
 }

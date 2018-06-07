@@ -28,7 +28,7 @@ namespace CommunicationBusLib
             string json;
 
             //saljemo sql zahtev ka bazi podataka
-            response = repository.DoQuery(sql);
+           // response = repository.DoQuery(sql); //problem jer vracamo list<resposne>
 
             //pretvaramo response u Xml
             
