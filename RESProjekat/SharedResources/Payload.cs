@@ -1,10 +1,11 @@
 ﻿using SharedResources.Interfaces;
+using System.Collections.Generic;
 
 namespace SharedResources
 {
     public class Payload : IPayload
     {
-        public IResource Resource { get; set; }
+        public List<IResource> Resource { get; set; }
         public string ErrorMessage { get; set; }
 
         public Payload()
@@ -12,7 +13,7 @@ namespace SharedResources
 
         }
 
-        public Payload(IResource resource, string errorMessage)
+        public Payload(List<IResource> resource, string errorMessage)
         {
             this.Resource = resource;
             this.ErrorMessage = errorMessage;
