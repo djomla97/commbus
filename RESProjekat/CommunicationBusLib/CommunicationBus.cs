@@ -25,10 +25,10 @@ namespace CommunicationBusLib
 
             string xml = jsonXmlConverter.ConvertToXml(command);
             string sql = dbXmlConverter.ConvertFromXml(xml);
-            string json;
+            string json ="";
 
             //saljemo sql zahtev ka bazi podataka
-           // response = repository.DoQuery(sql); //problem jer vracamo list<resposne>
+             response = repository.DoQuery(sql); //problem jer vracamo list<resposne>
 
             //pretvaramo response u Xml
             

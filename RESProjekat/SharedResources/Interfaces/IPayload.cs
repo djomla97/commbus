@@ -1,8 +1,10 @@
-﻿namespace SharedResources.Interfaces
+﻿using System.Collections.Generic;
+
+namespace SharedResources.Interfaces
 {
     public interface IPayload
     {
-        IResource Resource { get; set; }
+        List<IResource> Resource { get; set; }
         string ErrorMessage { get; set; }
     }
 }
