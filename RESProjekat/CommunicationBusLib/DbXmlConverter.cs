@@ -169,14 +169,20 @@ namespace CommunicationBusLib
                     }
                     catch (Exception)
                     {
-                        sqlRequest.Append($"DELETE FROM {table} WHERE ");
-                        for (int i = 0; i < queries.Length; i++)
+                        if (queries == null)
                         {
-                            if (i == queries.Length - 1)
-                                sqlRequest.Append($"{queries[i]};");
-                            else
-                                sqlRequest.Append($"{queries[i]} AND ");
+                            sqlRequest.Append($"DROP {table}");
                         }
+                        else {
+                            sqlRequest.Append($"DELETE FROM {table} WHERE ");
+                            for (int i = 0; i < queries.Length; i++)
+                            {
+                                if (i == queries.Length - 1)
+                                    sqlRequest.Append($"{queries[i]};");
+                                else
+                                    sqlRequest.Append($"{queries[i]} AND ");
+                            }
+                        }     
                     }
 
                     break;
