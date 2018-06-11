@@ -9,6 +9,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Xml.Linq;
 using System.Xml;
+using System.IO;
+using Microsoft.SqlServer;
 
 namespace RepositoryLib
 {
@@ -35,6 +37,7 @@ namespace RepositoryLib
             ReadConfig();
             sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
+            InitDB();
         }
 
         private void ReadConfig()
@@ -43,6 +46,37 @@ namespace RepositoryLib
             xmlDocument.Load(@"..\..\..\config.xml");
             XmlNode sqlConnectionString = xmlDocument.DocumentElement.SelectSingleNode("/config/sqlconnectionstring");
             connectionString = sqlConnectionString.InnerText;
+        }
+
+        private void InitDB() {
+            // drop tables
+            string dropScript = File.ReadAllText(@"..\..\..\drop_tables.sql");
+            sqlCommand = new SqlCommand(dropScript);
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.ExecuteNonQuery();
+
+            // create tables - bitan raspored
+            string createScript = File.ReadAllText(@"..\..\..\create_connection.sql");
+            sqlCommand = new SqlCommand(createScript);
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.ExecuteNonQuery();
+
+            createScript = File.ReadAllText(@"..\..\..\create_typetable.sql");
+            sqlCommand = new SqlCommand(createScript);
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.ExecuteNonQuery();
+
+            createScript = File.ReadAllText(@"..\..\..\create_resource.sql");
+            sqlCommand = new SqlCommand(createScript);
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.ExecuteNonQuery();
+
+            // insert
+            string insertScript = File.ReadAllText(@"..\..\..\insert_data.sql");
+            sqlCommand = new SqlCommand(insertScript);
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.ExecuteNonQuery();
+
         }
 
         public Response DoQuery(string sqlQuery)
