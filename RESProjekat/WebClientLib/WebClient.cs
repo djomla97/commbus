@@ -140,7 +140,8 @@ namespace WebClientLib
                     return parsedRequest;
                 }
 
-                canParseQuery = true;
+                if(requestSplit.Length > 2)
+                    canParseQuery = true;
             }
             
             if(canParseQuery)
