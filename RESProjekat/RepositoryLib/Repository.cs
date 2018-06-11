@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using System.Xml.Linq;
+using System.Xml;
 
 namespace RepositoryLib
 {
@@ -17,7 +19,9 @@ namespace RepositoryLib
         private SqlDataAdapter dataAdapter;     // Za pristup prvoj tabeli 'resource'
         private DataTable dataTable;            //
 
-        private string connectionString = @"Data Source = (local)\SQLEXPRESS;Initial Catalog = Projekat1Db; Integrated Security = True; Pooling=False";
+        private string connectionString;
+        //private string connectionString = @"Data Source=DESKTOP-GBOAIN9\NEWSQLEXPRESS;Initial Catalog=projekatdb;Integrated Security=True;Pooling=False";
+        //private string connectionString = @"Data Source = (local)\SQLEXPRESS;Initial Catalog = Projekat1Db; Integrated Security = True; Pooling=False";
         private SqlCommand sqlCommand2;         //
         private SqlDataAdapter dataAdapter2;    // Za pristup drugoj tabeli 'TypeTable'
         private DataTable dataTable2;           //
@@ -28,15 +32,25 @@ namespace RepositoryLib
 
         public Repository()
         {
+            ReadConfig();
             sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
+        }
+
+        private void ReadConfig()
+        {
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(@"..\..\..\config.xml");
+            XmlNode sqlConnectionString = xmlDocument.DocumentElement.SelectSingleNode("/config/sqlconnectionstring");
+            connectionString = sqlConnectionString.InnerText;
         }
 
         public Response DoQuery(string sqlQuery)
         {
             string secondTable = "SELECT * FROM TypeTable WHERE id="; //za pristup drugoj tabeli
 
-            string query = sqlQuery.Replace("name", "rname"); //
+            string query = sqlQuery.Replace("name", "rname");
+            //query = query.Replace('\'', '\"');
             var sqlSplited = query.Split(' ');
 
             sqlCommand = new SqlCommand(query);
