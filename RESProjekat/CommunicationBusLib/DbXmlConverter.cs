@@ -22,20 +22,19 @@ namespace CommunicationBusLib
             request = request.Replace("\r\n", "");
             request = request.Replace(" ", "");
 
-
             // pozicije stringova
-            int firstIndexOfVerb = request.IndexOf("<verb>") + 6;
-            int lastIndexOfVerb = request.IndexOf("</verb>");
+            int firstIndexOfVerb = request.IndexOf("<Verb>") + 6;
+            int lastIndexOfVerb = request.IndexOf("</Verb>");
 
-            int firstIndexOfNoun = request.IndexOf("<noun>") + 6;
-            int lastIndexOfNoun = request.IndexOf("</noun>");
+            int firstIndexOfNoun = request.IndexOf("<Noun>") + 6;
+            int lastIndexOfNoun = request.IndexOf("</Noun>");
 
             // mozda nije unet query ili fields
             bool foundQuery = false;
             bool foundFields = false;
      
-            int firstIndexOfQuery = request.IndexOf("<query>");
-            int lastIndexOfQuery = request.IndexOf("</query>");
+            int firstIndexOfQuery = request.IndexOf("<Query>");
+            int lastIndexOfQuery = request.IndexOf("</Query>");
 
             if (firstIndexOfQuery != -1 || lastIndexOfQuery != -1)
             {
@@ -43,8 +42,8 @@ namespace CommunicationBusLib
                 foundQuery = true;
             }
 
-            int firstIndexOfFields = request.IndexOf("<fields>");
-            int lastIndexOfFields = request.IndexOf("</fields>");
+            int firstIndexOfFields = request.IndexOf("<Fields>");
+            int lastIndexOfFields = request.IndexOf("</Fields>");
 
             if (firstIndexOfFields != -1 || lastIndexOfFields != -1)
             {

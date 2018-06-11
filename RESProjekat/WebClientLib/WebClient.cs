@@ -81,9 +81,9 @@ namespace WebClientLib
             // serialize u JSON, pa posalji
             string jsonFormat = JsonConvert.SerializeObject(requestParsed); 
 
-            //string response = communicationBus.SendCommand(jsonFormat);
+            string response = communicationBus.SendCommand(jsonFormat);
             
-            return jsonFormat;
+            return response;
         }
 
 

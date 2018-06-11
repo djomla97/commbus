@@ -12,7 +12,7 @@ namespace SharedResources
 
         public Resource() { }
 
-        public Resource(ResourceType type)
+        public Resource(IType type)
         {
             Type = type;
         }
