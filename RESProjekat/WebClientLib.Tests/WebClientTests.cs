@@ -80,6 +80,25 @@ namespace WebClientLib.Tests
 
         }
 
+        [Test]
+        [TestCase("GET /resource {\"name\"=\"pera\"}")]
+        [TestCase("GET /resource {\"name\"=\"pera\", \"fields\"=\"id, name, title\"}")]
+        public void WC_SendRequest_ResponseNotEmpty(string request)
+        {
+            string result = webClient.SendRequest(request);
+
+            Assert.AreNotEqual(result, "");
+        }
+
+        [Test]
+        [TestCase("GET /resource")]
+        public void WC_SendRequest_AllResources(string request)
+        {
+            string result = webClient.SendRequest(request); 
+
+            Assert.AreNotEqual(result, "");
+        }
+
         [TearDown]
         public void TearDown()
         {

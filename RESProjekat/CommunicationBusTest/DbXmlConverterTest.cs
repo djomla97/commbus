@@ -1,6 +1,8 @@
 ﻿using CommunicationBusLib;
 using NUnit.Framework;
 using SharedResources;
+using SharedResources.Interfaces;
+using System.Collections.Generic;
 
 namespace CommunicationBusTest
 {
@@ -56,26 +58,27 @@ namespace CommunicationBusTest
             dbXmlConverter = new DbXmlConverter();
 
             // test get
-            testXmlOne = "<request>\r\n  <verb>GET</verb>\r\n  <noun>/resource</noun>\r\n  <query>name='pera';type=1</query>\r\n  <fields>id;name;surname</fields>\r\n</request>";
-            testXmlTwo = "<request>\r\n  <verb>GET</verb>\r\n  <noun>/resource/2</noun>\r\n   <fields>id;name</fields>\r\n</request>";
-            testXmlThree = "<request>\r\n  <verb>GET</verb>\r\n  <noun>/resource/3</noun>\r\n</request>";
-            testXmlFour = "<request>\r\n  <verb>GET</verb>\r\n  <noun>/resource</noun>\r\n  <query>name='nesto';type=2</query>\r\n</request>";
-            testXmlBreak = "<request>r\n  <verb>BREAK</verb>\r\n  <noun>/resource/2</noun>\r\n</request>";
+            testXmlOne = "<Request>\r\n  <Verb>GET</Verb>\r\n  <Noun>/resource</Noun>\r\n  <Query>name='pera';type=1</Query>\r\n  <Fields>id;name;surname</Fields>\r\n</Request>";
+            testXmlTwo = "<Request>\r\n  <Verb>GET</Verb>\r\n  <Noun>/resource/2</Noun>\r\n   <Fields>id;name</Fields>\r\n</Request>";
+            testXmlThree = "<Request>\r\n  <Verb>GET</Verb>\r\n  <Noun>/resource/3</Noun>\r\n</Request>";
+            testXmlFour = "<Request>\r\n  <Verb>GET</Verb>\r\n  <Noun>/resource</Noun>\r\n  <Query>name='nesto';type=2</Query>\r\n</Request>";
+            testXmlBreak = "<Request>r\n  <Verb>BREAK</Verb>\r\n  <Noun>/resource/2</Noun>\r\n</Request>";
 
             // test post
-            testXmlPostOne = "<request>\r\n  <verb>POST</verb>\r\n  <noun>/resource</noun>\r\n  <query>name='pera';type=1</query>\r\n</request>";
+            testXmlPostOne = "<Request>\r\n  <Verb>POST</Verb>\r\n  <Noun>/resource</Noun>\r\n  <Query>name='pera';type=1</Query>\r\n</Request>";
 
             // test patch
-            testXmlPatchOne = "<request>\r\n  <verb>PATCH</verb>\r\n  <noun>/resource/3</noun>\r\n  <query>name='mladjo';type=2</query>\r\n</request>";
+            testXmlPatchOne = "<Request>\r\n  <Verb>PATCH</Verb>\r\n  <Noun>/resource/3</Noun>\r\n  <Query>name='mladjo';type=2</Query>\r\n</Request>";
 
             // test delete
-            testXmlDeleteOne = "<request>\r\n  <verb>DELETE</verb>\r\n  <noun>/resource/3</noun>\r\n</request>";
-            testXmlDeleteTwo = "<request>\r\n  <verb>DELETE</verb>\r\n  <noun>/resource</noun>\r\n  <query>name='pera';type=2</query>\r\n</request>";
+            testXmlDeleteOne = "<Request>\r\n  <Verb>DELETE</Verb>\r\n  <Noun>/resource/3</Noun>\r\n</Request>";
+            testXmlDeleteTwo = "<Request>\r\n  <Verb>DELETE</Verb>\r\n  <Noun>/resource</Noun>\r\n  <Query>name='pera';type=2</Query>\r\n</Request>";
 
             // test response
             testResponse = new Response() { Status = Status.SUCCESS.ToString(), StatusCode = StatusCode.SUCCESS_CODE };
             testResponse.Payload = new Payload();
-            testResponse.Payload.Resource = new Resource() { ID = 1, Title = "Osoba", Name = "Pera", Description = "Test osoba", Type = new ResourceType() { ID = 1, Title = "Osoba Tip" } };
+            testResponse.Payload.Resource = new List<IResource>();
+            testResponse.Payload.Resource.Add(new Resource() { ID = 1, Title = "Osoba", Name = "Pera", Description = "Test osoba", Type = new ResourceType() { ID = 1, Title = "Osoba Tip" } });
 
 
             // ----------------------------------------------------

@@ -31,7 +31,7 @@ namespace CommunicationBusLib
           //  XmlDocument xmlDocument = (XmlDocument)JsonConvert.DeserializeXmlNode(json);
           //  string xml = xmlDocument.ToString();
 
-            XNode xmlResponse = JsonConvert.DeserializeXNode(json);
+            XNode xmlResponse = JsonConvert.DeserializeXNode(json, "request");
 
             return xmlResponse.ToString();
 

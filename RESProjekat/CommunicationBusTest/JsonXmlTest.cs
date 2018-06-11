@@ -30,7 +30,7 @@ namespace CommunicationBusTest
 
         //dovrsiti
         [Test]
-        [TestCase("{\"request\":{\"verb\":\"GET\",\"noun\":\"/resurs/1\",\"query\":\"name='pera';type=1\",\"fields\":\"id;name;surname\"}}")]
+        [TestCase("{\"verb\":\"GET\",\"noun\":\"/resurs/1\",\"query\":\"name='pera';type=1\",\"fields\":\"id;name;surname\"}")]
         public void ConvertToXmlDobar(string json)
         {
             JsonXmlConverter xmlConverter = new JsonXmlConverter();
@@ -41,7 +41,7 @@ namespace CommunicationBusTest
 
 
         [Test]
-        [TestCase("{\"request\":{\"verb\":\"POST\",\"noun\":\"/resurs\",\"query\":\"name='pera';type=1\"}}")]
+        [TestCase("{\"verb\":\"POST\",\"noun\":\"/resurs\",\"query\":\"name='pera';type=1\"}")]
         public void ConverttToXmlDobar2(string json)
         {
             JsonXmlConverter xmlConverter = new JsonXmlConverter();

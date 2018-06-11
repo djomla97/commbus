@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharedResources;
 using NUnit.Framework;
+using SharedResources.Interfaces;
 
 namespace SharedResources.Tests
 {
@@ -30,7 +31,7 @@ namespace SharedResources.Tests
         public void Payload_EmptyConstructorResource_Good()
         {
             Payload testPayload = new Payload();
-            testPayload.Resource = new Resource();
+            testPayload.Resource = new List<IResource>();
             Assert.NotNull(testPayload.Resource);
         }
 
@@ -38,30 +39,32 @@ namespace SharedResources.Tests
         public void Payload_EmptyConstructorType_Good()
         {
             Payload testPayload = new Payload();
-            testPayload.Resource = new Resource();
-            testPayload.Resource.Type = new ResourceType();
-            Assert.NotNull(testPayload.Resource.Type);
+            testPayload.Resource = new List<IResource>();
+            testPayload.Resource.Add(new Resource());
+            testPayload.Resource[0].Type = new ResourceType();
+            Assert.NotNull(testPayload.Resource[0].Type);
         }
 
         [Test]
         public void Payload_EmptyConstructorResourceProperties_Good()
         {
             Payload testPayload = new Payload();
-            testPayload.Resource = new Resource();
-            testPayload.Resource.ID = 2;
-            testPayload.Resource.Title = "Man";
-            testPayload.Resource.Name = "Pera";
-            testPayload.Resource.Description = "Test person";
-            testPayload.Resource.Type = new ResourceType();
-            testPayload.Resource.Type.ID = 1;
-            testPayload.Resource.Type.Title = "Human";
+            testPayload.Resource = new List<IResource>();
+            testPayload.Resource.Add(new Resource());
+            testPayload.Resource[0].ID = 2;
+            testPayload.Resource[0].Title = "Man";
+            testPayload.Resource[0].Name = "Pera";
+            testPayload.Resource[0].Description = "Test person";
+            testPayload.Resource[0].Type = new ResourceType();
+            testPayload.Resource[0].Type.ID = 1;
+            testPayload.Resource[0].Type.Title = "Human";
 
-            Assert.AreEqual(2, testPayload.Resource.ID);
-            Assert.AreEqual("Man", testPayload.Resource.Title);
-            Assert.AreEqual("Pera", testPayload.Resource.Name);
-            Assert.AreEqual("Test person", testPayload.Resource.Description);
-            Assert.AreEqual(1, testPayload.Resource.Type.ID);
-            Assert.AreEqual("Human", testPayload.Resource.Type.Title);
+            Assert.AreEqual(2, testPayload.Resource[0].ID);
+            Assert.AreEqual("Man", testPayload.Resource[0].Title);
+            Assert.AreEqual("Pera", testPayload.Resource[0].Name);
+            Assert.AreEqual("Test person", testPayload.Resource[0].Description);
+            Assert.AreEqual(1, testPayload.Resource[0].Type.ID);
+            Assert.AreEqual("Human", testPayload.Resource[0].Type.Title);
         }
 
         [Test]
@@ -75,14 +78,15 @@ namespace SharedResources.Tests
         public void Payload_TypeIsNull_Bad()
         {
             Payload testPayload = new Payload();
-            testPayload.Resource = new Resource();
-            Assert.IsNull(testPayload.Resource.Type);
+            testPayload.Resource = new List<IResource>();
+            testPayload.Resource.Add(new Resource());
+            Assert.IsNull(testPayload.Resource[0].Type);
         }
 
         [Test]
         public void Payload_ConstructorParameters_Good()
         {
-            Payload testPayload = new Payload(new Resource(), "");
+            Payload testPayload = new Payload(new List<IResource>(), "");
             Assert.NotNull(testPayload.Resource);
             Assert.AreEqual("", testPayload.ErrorMessage);
         }
