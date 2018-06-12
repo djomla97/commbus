@@ -100,8 +100,24 @@ namespace RepositoryLib
 
             if (sqlSplited[0] == "SELECT") //method
             {
-                dataAdapter.Fill(dataTable);
+                try
+                {
+                    dataAdapter.Fill(dataTable);
+                }
+                catch
+                {
+                    response.Status = "Lose ste uneli podatke";
+                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    return response;
+                }
+                
 
+                if(dataTable.Rows.Count == 0)
+                {
+                    response.Status = "Ne postoji u tabeli";
+                    response.StatusCode = StatusCode.REJECTED_CODE;
+                    return response;
+                }
 
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
@@ -113,19 +129,35 @@ namespace RepositoryLib
                     response.Payload.Resource[i].Description = dataTable.Rows[i]["description"].ToString();
                     response.Payload.Resource[i].Title = dataTable.Rows[i]["title"].ToString();
 
-                    int secondId = response.Payload.Resource[i].ID; //the id we are looking in the second table
-                    sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
+                    if (dataTable.Rows[i]["type"].ToString().ToLower() != "null" && dataTable.Rows[i]["type"].ToString() != "")
+                    {
+                        int secondId = int.Parse(dataTable.Rows[i]["type"].ToString()); //the id we are looking in the second table
+                        sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
 
-                    sqlCommand2.Connection = sqlConnection;
+                        sqlCommand2.Connection = sqlConnection;
 
-                    dataAdapter2 = new SqlDataAdapter(sqlCommand2);
-                    dataTable2 = new DataTable();
-                    dataAdapter2.Fill(dataTable2);
+                        dataAdapter2 = new SqlDataAdapter(sqlCommand2);
+                        dataTable2 = new DataTable();
+                        dataAdapter2.Fill(dataTable2);
 
 
-                    response.Payload.Resource[i].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
-                    response.Payload.Resource[i].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                        response.Payload.Resource[i].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
+                        response.Payload.Resource[i].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                    }
+                    else
+                    {
+                        sqlCommand = new SqlCommand("SELECT * FROM TypeTable WHERE id=1"); //ako nije naveo type, stavljamo da je 1
+                        sqlCommand.Connection = sqlConnection;
 
+                        dataAdapter = new SqlDataAdapter(sqlCommand);
+                        dataTable = new DataTable();
+                        dataAdapter.Fill(dataTable);
+
+                        response.Payload.Resource[0].Type.ID = 1;
+                        response.Payload.Resource[0].Type.Title = dataTable.Rows[0]["title"].ToString();
+
+
+                    }
 
                     //  response.StatusCode = StatusCode.SUCCESS_CODE;
                     //  response.Status = "SUCCESS";
@@ -140,51 +172,121 @@ namespace RepositoryLib
 
             else if (sqlSplited[0] == "INSERT")
             {
-                sqlCommand.ExecuteNonQuery(); //izvrsi
-
-                sqlCommand3 = new SqlCommand("SELECT * FROM resource WHERE id = SCOPE_IDENTITY();"); //vracanje novog
-                sqlCommand3.Connection = sqlConnection;
-
-                dataAdapter3 = new SqlDataAdapter(sqlCommand3);
-                dataTable3 = new DataTable();
-                dataAdapter3.Fill(dataTable3);
-
-                response.Payload.Resource.Add(new Resource(new ResourceType()));
-
-                response.Payload.Resource[0].ID = int.Parse(dataTable3.Rows[0]["id"].ToString());
-                response.Payload.Resource[0].Name = dataTable3.Rows[0]["rname"].ToString();
-                response.Payload.Resource[0].Description = dataTable3.Rows[0]["description"].ToString();
-                response.Payload.Resource[0].Title = dataTable3.Rows[0]["title"].ToString();
-
-                //upis u drugu tabelu:
-                if (query.Contains("type"))
+                if(query.Contains("type"))
                 {
-                    int idx1 = query.IndexOf("VALUES") + 6;
+                    int idx = query.IndexOf("VALUES (") + 8;
+                    string resultType = query.Substring(idx);
+                    string[] result = resultType.Split(',');
+                    string[] lastResult = result.Last().Split(')');
 
-                    string commandFortType = query.Substring(idx1); // (name, type)
-                    string[] getType = commandFortType.Split(','); //[0]'name', [1]'type'
-                    sqlCommand3 = new SqlCommand("INSERT INTO TypeTable (title) VALUES (" + getType.Last());
+                    sqlCommand3 = new SqlCommand("SELECT * FROM TypeTable");
+                    sqlCommand3.Connection = sqlConnection;
+
+                    dataAdapter3 = new SqlDataAdapter(sqlCommand3);
+                    dataTable3 = new DataTable();
+                    dataAdapter3.Fill(dataTable3);
+
+                    if(int.Parse(lastResult[0]) > dataTable3.Rows.Count)
+                    {
+                        response.Status = "Ne postoji takav type";
+                        response.StatusCode = StatusCode.REJECTED_CODE;
+                        return response;
+                    }
+                    
                 }
-                else //ako ne upisuje type onda stavljamo null
+                try
                 {
-                    sqlCommand3 = new SqlCommand("INSERT INTO TypeTable (title) VALUES (null)");
+                    sqlCommand.ExecuteNonQuery(); //izvrsi
                 }
-                sqlCommand3.Connection = sqlConnection;
-                sqlCommand3.ExecuteNonQuery();
+                catch
+                {
+                    response.Status = "Lose ste uneli podatke";
+                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    return response;
+                }
 
-                //pristpu drugoj tabeli:
-                int secondId = response.Payload.Resource[0].ID; //the id we are looking in the second table
-                sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
+                
 
-                sqlCommand2.Connection = sqlConnection;
+                if (!query.Contains("connection")) //za resource
+                {
 
-                dataAdapter2 = new SqlDataAdapter(sqlCommand2);
-                dataTable2 = new DataTable();
-                dataAdapter2.Fill(dataTable2);
+                    sqlCommand3 = new SqlCommand("SELECT * FROM resource WHERE id = SCOPE_IDENTITY();"); //vracanje novog
+                    sqlCommand3.Connection = sqlConnection;
+
+                    dataAdapter3 = new SqlDataAdapter(sqlCommand3);
+                    dataTable3 = new DataTable();
+                    dataAdapter3.Fill(dataTable3);
+
+                    response.Payload.Resource.Add(new Resource(new ResourceType()));
+
+                    response.Payload.Resource[0].ID = int.Parse(dataTable3.Rows[0]["id"].ToString());
+                    response.Payload.Resource[0].Name = dataTable3.Rows[0]["rname"].ToString();
+                    response.Payload.Resource[0].Description = dataTable3.Rows[0]["description"].ToString();
+                    response.Payload.Resource[0].Title = dataTable3.Rows[0]["title"].ToString();
+
+                    ////upis u drugu tabelu:
+                    //if (query.Contains("type"))
+                    //{
+                    //    int idx1 = query.IndexOf("VALUES") + 6;
+
+                    //    string commandFortType = query.Substring(idx1); // (name, type)
+                    //    string[] getType = commandFortType.Split(','); //[0]'name', [1]'type'
+                    //    sqlCommand3 = new SqlCommand("INSERT INTO TypeTable (title) VALUES (" + getType.Last());
+                    //}
+                    //else //ako ne upisuje type onda stavljamo null
+                    //{
+                    //    sqlCommand3 = new SqlCommand("INSERT INTO TypeTable (title) VALUES (null)");
+                    //}
+                    //sqlCommand3.Connection = sqlConnection;
+                    //sqlCommand3.ExecuteNonQuery();
+
+                    //pristpu drugoj tabeli:
+                    if (dataTable3.Rows[0]["type"].ToString().ToLower() != "null" && dataTable3.Rows[0]["type"].ToString() != "")
+                    {
+                        int secondId = int.Parse(dataTable3.Rows[0]["type"].ToString()); //the id we are looking in the second table
+                        sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
+
+                        sqlCommand2.Connection = sqlConnection;
+
+                        dataAdapter2 = new SqlDataAdapter(sqlCommand2);
+                        dataTable2 = new DataTable();
+                        dataAdapter2.Fill(dataTable2);
 
 
-                response.Payload.Resource[0].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
-                response.Payload.Resource[0].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                        response.Payload.Resource[0].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
+                        response.Payload.Resource[0].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                    }
+                    else
+                    {
+                        sqlCommand = new SqlCommand("SELECT * FROM TypeTable WHERE id=1"); //ako nije naveo type, stavljamo da je 1
+                        sqlCommand.Connection = sqlConnection;
+
+                        dataAdapter = new SqlDataAdapter(sqlCommand);
+                        dataTable = new DataTable();
+                        dataAdapter.Fill(dataTable);
+
+                        response.Payload.Resource[0].Type.ID = 1;
+                        response.Payload.Resource[0].Type.Title = dataTable.Rows[0]["title"].ToString();
+
+                    }
+                }
+
+                else //za connection taeblu
+                {
+                    sqlCommand3 = new SqlCommand("SELECT * FROM connection WHERE id = SCOPE_IDENTITY();"); //vracanje novog
+                    sqlCommand3.Connection = sqlConnection;
+
+                    dataAdapter3 = new SqlDataAdapter(sqlCommand3);
+                    dataTable3 = new DataTable();
+                    dataAdapter3.Fill(dataTable3);
+
+                    response.Payload.Resource.Add(new Resource(new ResourceType()));
+
+//-------------------------------------------------------------------------------Menjati kad se promeni resource:---------------------------------------------------------
+                    response.Payload.Resource[0].ID = int.Parse(dataTable3.Rows[0]["id"].ToString()); //menjati kad se promeni resource
+                    response.Payload.Resource[0].Description = dataTable3.Rows[0]["one"].ToString() + dataTable3.Rows[0]["two"].ToString();
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+                }
 
                 //  ress.StatusCode = StatusCode.SUCCESS_CODE;
                 //  ress.Status = "SUCCESS";
@@ -193,7 +295,35 @@ namespace RepositoryLib
             }
             else if (sqlSplited[0] == "UPDATE")
             {
-                sqlCommand.ExecuteNonQuery(); //izvrsi
+
+                try
+                {
+                    sqlCommand.ExecuteNonQuery(); //izvrsi
+                }
+                catch
+                {
+                    response.Status = "Lose ste uneli podatke";
+                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    return response;
+                }
+
+                string commandType = "SELECT * FROM resource WHERE id=";
+                int idx = query.IndexOf("id=") + 3;
+                string command = query.Substring(idx);
+                string[] lastCommand = command.Split(';');
+
+                sqlCommand3 = new SqlCommand(commandType + lastCommand[0]); //vracanje novog
+                sqlCommand3.Connection = sqlConnection;
+
+                dataAdapter3 = new SqlDataAdapter(sqlCommand3);
+                dataTable3 = new DataTable();
+                dataAdapter3.Fill(dataTable3);
+                if(dataTable3.Rows.Count == 0)
+                {
+                    response.Status = "Ne postoji taj id u tabeli";
+                    response.StatusCode = StatusCode.REJECTED_CODE;
+                    return response;
+                }
 
                 string commandForReturningUpdated = "SELECT * FROM resource ";
                 int takingId = query.IndexOf("WHERE");
@@ -214,58 +344,87 @@ namespace RepositoryLib
                 response.Payload.Resource[0].Title = dataTable3.Rows[0]["title"].ToString();
 
                 //update u drugoj tabeli:
-                if (query.Contains("type"))
-                {
-                    int idx1 = query.IndexOf("type=") + 5; //pocetak
-                    int idx2 = query.IndexOf("WHERE"); //kraj
+                //if (query.Contains("type"))
+                //{
+                //    int idx1 = query.IndexOf("type=") + 5; //pocetak
+                //    int idx2 = query.IndexOf("WHERE"); //kraj
 
-                    string commandFortType = query.Substring(idx1, idx2 - idx1);
-                    sqlCommand3 = new SqlCommand("UPDATE TypeTable SET title=" + commandFortType + "WHERE id=" + response.Payload.Resource[0].ID);
-                    sqlCommand3.Connection = sqlConnection;
-                    sqlCommand3.ExecuteNonQuery();
-                }
+                //    string commandFortType = query.Substring(idx1, idx2 - idx1);
+                //    sqlCommand3 = new SqlCommand("UPDATE TypeTable SET title=" + commandFortType + "WHERE id=" + response.Payload.Resource[0].ID);
+                //    sqlCommand3.Connection = sqlConnection;
+                //    sqlCommand3.ExecuteNonQuery();
+                //}
 
                 //pristpu drugoj tabeli:
-                int secondId = response.Payload.Resource[0].ID; //the id we are looking in the second table
-                sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
 
-                sqlCommand2.Connection = sqlConnection;
+                if (dataTable3.Rows[0]["type"].ToString().ToLower() != "null" && dataTable3.Rows[0]["type"].ToString() != "")
+                {
+                    int secondId = int.Parse(dataTable3.Rows[0]["type"].ToString()); //the id we are looking in the second table
+                    sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
 
-                dataAdapter2 = new SqlDataAdapter(sqlCommand2);
-                dataTable2 = new DataTable();
-                dataAdapter2.Fill(dataTable2);
+                    sqlCommand2.Connection = sqlConnection;
+
+                    dataAdapter2 = new SqlDataAdapter(sqlCommand2);
+                    dataTable2 = new DataTable();
+                    dataAdapter2.Fill(dataTable2);
 
 
-                response.Payload.Resource[0].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
-                response.Payload.Resource[0].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                    response.Payload.Resource[0].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
+                    response.Payload.Resource[0].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                }
+                else
+                {
+                    sqlCommand = new SqlCommand("SELECT * FROM TypeTable WHERE id=1"); //ako nije naveo type, stavljamo da je 1
+                    sqlCommand.Connection = sqlConnection;
+
+                    dataAdapter = new SqlDataAdapter(sqlCommand);
+                    dataTable = new DataTable();
+                    dataAdapter.Fill(dataTable);
+
+                    response.Payload.Resource[0].Type.ID = 1;
+                    response.Payload.Resource[0].Type.Title = dataTable.Rows[0]["title"].ToString();
+
+                }
+
+
+
 
             }
 
             else //delete
             {
-                string deleteInTheSecondTable = "DELETE FROM TypeTable WHERE id=";
-                string takeCommand = "SELECT * FROM resource WHERE ";
-                int idx1 = query.IndexOf("WHERE ") + 6;
-                string arguments = query.Substring(idx1);
+                //string deleteInTheSecondTable = "DELETE FROM TypeTable WHERE id=";
+                //string takeCommand = "SELECT * FROM resource WHERE ";
+                //int idx1 = query.IndexOf("WHERE ") + 6;
+                //string arguments = query.Substring(idx1);
 
-                sqlCommand3 = new SqlCommand(takeCommand + arguments); //vracanje novog
-                sqlCommand3.Connection = sqlConnection;
+                //sqlCommand3 = new SqlCommand(takeCommand + arguments); //vracanje novog
+                //sqlCommand3.Connection = sqlConnection;
 
-                dataAdapter3 = new SqlDataAdapter(sqlCommand3);
-                dataTable3 = new DataTable();
-                dataAdapter3.Fill(dataTable3);
+                //dataAdapter3 = new SqlDataAdapter(sqlCommand3);
+                //dataTable3 = new DataTable();
+                //dataAdapter3.Fill(dataTable3);
 
-                for (int i = 0; i < dataTable3.Rows.Count; i++)
+                //for (int i = 0; i < dataTable3.Rows.Count; i++)
+                //{
+                //    string id = dataTable3.Rows[i]["id"].ToString() + ";";
+
+                //       sqlCommand2 = new SqlCommand(deleteInTheSecondTable + id);
+                //       sqlCommand2.Connection = sqlConnection;
+                //     sqlCommand2.ExecuteNonQuery();      //brisemo iz prvo iz TypeTable
+                //   }
+
+
+                try
                 {
-                    string id = dataTable3.Rows[i]["id"].ToString() + ";";
-
-                    sqlCommand2 = new SqlCommand(deleteInTheSecondTable + id);
-                    sqlCommand2.Connection = sqlConnection;
-                    sqlCommand2.ExecuteNonQuery();      //brisemo iz prvo iz TypeTable
+                    sqlCommand.ExecuteNonQuery(); //izvrsi
                 }
-
-
-                sqlCommand.ExecuteNonQuery(); //obrisi
+                catch
+                {
+                    response.Status = "Lose ste uneli podatke";
+                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    return response;
+                }
 
 
 
