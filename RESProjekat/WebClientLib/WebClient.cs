@@ -4,16 +4,22 @@ using SharedResources.Interfaces;
 using System;
 using System.Linq;
 using CommunicationBusLib;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebClientLib
 {
     public class WebClient : IWebClient
     {
-        private CommunicationBus communicationBus = null;
+        private ICommunicationBus communicationBus = null;
         
-        public WebClient()
-        {
+        [ExcludeFromCodeCoverage]
+        public WebClient() {
             communicationBus = new CommunicationBus();
+        }
+
+        public WebClient(ICommunicationBus commBus)
+        {
+            this.communicationBus = commBus;
         }
 
         /// <summary>
@@ -23,16 +29,6 @@ namespace WebClientLib
         /// <returns>JSON response</returns>
         public string SendRequest(string request)
         {
-            // GET /resource/1
-            // ili GET /resource { "name"="pera", "type"="2", connectedTo="4" }
-
-            // POST /resource { podaci u json kao gore }
-
-            // PATCH /resource/2 { novi podaci }
-
-            // DELETE /resource { json podaci }
-            // ili 
-            // DELETE /resource/4 
 
             IRequest requestParsed = ParseRequest(request);
             IResponse responseObject = new Response();
@@ -73,19 +69,27 @@ namespace WebClientLib
                         responseObject.Status = Status.BAD_FORMAT.ToString();
                         responseObject.StatusCode = StatusCode.BAD_FORMAT_CODE;
                         return JsonConvert.SerializeObject(responseObject);
-                    }                    
+                    }
+                }
+                else
+                {
+                    responseObject.Payload = new Payload();
+                    responseObject.Payload.Resource = null;
+                    responseObject.Payload.ErrorMessage = "Request is not valid.";
+                    responseObject.Status = Status.BAD_FORMAT.ToString();
+                    responseObject.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    return JsonConvert.SerializeObject(responseObject);
                 }
             }
 
 
             // serialize u JSON, pa posalji
-            string jsonFormat = JsonConvert.SerializeObject(requestParsed); 
+            string jsonFormat = JsonConvert.SerializeObject(requestParsed);
 
             string response = communicationBus.SendCommand(jsonFormat);
             
             return response;
         }
-
 
         // helper za parsiranje zahteva u konacan JSON oblik za slanje na CommunicationBus
         public IRequest ParseRequest(string requestToParse)
