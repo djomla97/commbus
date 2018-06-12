@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using SharedResources;
 using SharedResources.Interfaces;
+using Moq;
+using CommunicationBusLib;
 
 namespace WebClientLib.Tests
 {
@@ -11,12 +13,15 @@ namespace WebClientLib.Tests
         private WebClient webClient = null;
         private Response response = null;
         private Request request = null;
-       
+        private Mock<ICommunicationBus> commBusMock;
 
         [SetUp]
         public void SetUp()
         {
-            webClient = new WebClient();
+            commBusMock = new Mock<ICommunicationBus>();
+            commBusMock.Setup(c => c.SendCommand(It.IsAny<string>())).Returns("Test pass");
+
+            webClient = new WebClient(commBusMock.Object);
             response = new Response();
             request = new Request();
         }
@@ -24,15 +29,17 @@ namespace WebClientLib.Tests
         [Test]
         public void WC_Constructor_Good()
         {
-            WebClient webClient = new WebClient();
+            WebClient webClient = new WebClient(commBusMock.Object);
             Assert.IsNotNull(webClient);
         }
 
         [Test]
+        [TestCase("POST rr")]
         [TestCase("GET /")]
         [TestCase("PATCH /resource")]
         [TestCase("PATCH /resource/2")]
         [TestCase("DELETE/resource/2")]
+        [TestCase("GET /resource {nestobezbeneovede en00")]
         public void WC_SendRequest_BadRequests(string request)
         {
             string result = webClient.SendRequest(request);
@@ -72,6 +79,7 @@ namespace WebClientLib.Tests
         [TestCase("GET /resource {\"name\"=\"pera\", \"connectedTo\"=\"3, 5, 7\"}, \"connectedType\"=\"3, 5\"")]
         [TestCase("GET /resource {\"name\"=\"pera\", \"connectedType\"=\"3, 5\"}")]
         [TestCase("GET /resource {\"name\"=\"pera\", \"fields\"=\"id, name, title\"}")]
+        
         public void WC_ParseRequest_QuerySuccess(string request)
         {
             IRequest result = webClient.ParseRequest(request);
@@ -79,6 +87,19 @@ namespace WebClientLib.Tests
             Assert.IsNotNull(result.Query);
 
         }
+
+        [Test]
+        [TestCase("GET /resource {\"name\"=\"pera\"}")]
+        [TestCase("POST /resource {\"name\"=\"pera\", \"description\"=\"neki test opis\"}")]
+        [TestCase("DELETE /resource/7")]
+        [TestCase("PATCH /resource/2 {\"name\"=\"pera\", \"type\"=\"3\"}")]
+        public void WC_ParseRequest_ParseSuccess(string request)
+        {
+            IRequest result = webClient.ParseRequest(request);
+
+            Assert.IsNotNull(result);
+        }
+
 
         [Test]
         [TestCase("GET /resource {\"name\"=\"pera\"}")]

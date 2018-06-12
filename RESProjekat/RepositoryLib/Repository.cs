@@ -14,7 +14,7 @@ using Microsoft.SqlServer;
 
 namespace RepositoryLib
 {
-    public class Repository
+    public class Repository : IRepository
     {
         private SqlConnection sqlConnection;
         private SqlCommand sqlCommand;          //
@@ -79,7 +79,7 @@ namespace RepositoryLib
 
         }
 
-        public Response DoQuery(string sqlQuery)
+        public IResponse DoQuery(string sqlQuery)
         {
             string secondTable = "SELECT * FROM TypeTable WHERE id="; //za pristup drugoj tabeli
 

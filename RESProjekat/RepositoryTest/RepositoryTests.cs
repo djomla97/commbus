@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using RepositoryLib;
 using SharedResources;
+using SharedResources.Interfaces;
 
 namespace RepositoryTest
 {
@@ -18,7 +19,7 @@ namespace RepositoryTest
         {
             Repository repository = new Repository();
 
-            Response response = repository.DoQuery("SELECT * FROM resource");
+            IResponse response = repository.DoQuery("SELECT * FROM resource");
 
             Assert.AreEqual("Pera", response.Payload.Resource[0].Name);
             Assert.AreEqual("Snoopy", response.Payload.Resource[1].Name);
@@ -30,7 +31,7 @@ namespace RepositoryTest
         {
             Repository repository = new Repository();
 
-            Response response = repository.DoQuery("INSERT INTO resource (name, type) VALUES ('Biba', 1);");
+            IResponse response = repository.DoQuery("INSERT INTO resource (name, type) VALUES ('Biba', 1);");
 
             Assert.AreEqual("Biba", response.Payload.Resource[0].Name);
 
@@ -41,7 +42,7 @@ namespace RepositoryTest
         {
             Repository repository = new Repository();
 
-            Response response = repository.DoQuery("UPDATE resource SET name='mladjo', type=2 WHERE id=2;");
+            IResponse response = repository.DoQuery("UPDATE resource SET name='mladjo', type=2 WHERE id=2;");
 
             Assert.AreEqual("mladjo", response.Payload.Resource[0].Name);
 
@@ -52,7 +53,7 @@ namespace RepositoryTest
         {
             Repository repository = new Repository();
 
-            Response response = repository.DoQuery("DELETE FROM resource WHERE id=14;");
+            IResponse response = repository.DoQuery("DELETE FROM resource WHERE id=14;");
 
             Assert.AreEqual("SUCCESS", response.Status);
             Assert.AreEqual(StatusCode.SUCCESS_CODE, response.StatusCode);
