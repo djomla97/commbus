@@ -127,7 +127,7 @@ namespace RepositoryLib
                 {
                     response.Payload.Resource.Add(new Resource(new ResourceType()));
 
-                    // ovde sam ti dodao proveru radi Fields, mozda ne zeli nesto od ovog kao povratnu vrednost
+                    // ovde sam dodao proveru radi Fields, mozda ne zeli nesto od ovog kao povratnu vrednost
                     // pa i ne vrati u dataTable
                     if (dataTable.Columns.Contains("id"))
                         response.Payload.Resource[i].ID = int.Parse(dataTable.Rows[i]["id"].ToString());
@@ -215,7 +215,18 @@ namespace RepositoryLib
                     }
                     else
                     {
-                        // ovde postaviti type na default vrednost, ne znam tacno kako si ceo ovaj insert radio
+                        // ovde postaviti type na default vrednost
+
+                        sqlCommand2 = new SqlCommand("SELECT * FROM TypeTable WHERE id=1"); //ako nije naveo type, stavljamo da je 1
+                        sqlCommand2.Connection = sqlConnection;
+
+                        dataAdapter2 = new SqlDataAdapter(sqlCommand2);
+                        dataTable2 = new DataTable();
+                        dataAdapter2.Fill(dataTable2);
+
+                        response.Payload.Resource[0].Type.ID = 1;
+                        response.Payload.Resource[0].Type.Title = dataTable2.Rows[0]["title"].ToString();
+
                     }
 
                     int idx = query.IndexOf("VALUES (") + 8;
