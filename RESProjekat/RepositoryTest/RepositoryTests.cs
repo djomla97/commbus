@@ -21,7 +21,7 @@ namespace RepositoryTest
             Response response = repository.DoQuery("SELECT * FROM resource");
 
             Assert.AreEqual("Pera", response.Payload.Resource[0].Name);
-            Assert.AreEqual("Djoka", response.Payload.Resource[1].Name);
+            Assert.AreEqual("Snoopy", response.Payload.Resource[1].Name);
         }
 
 
@@ -41,7 +41,7 @@ namespace RepositoryTest
         {
             Repository repository = new Repository();
 
-            Response response = repository.DoQuery("UPDATE resource SET name='mladjo', type=2 WHERE id=15;");
+            Response response = repository.DoQuery("UPDATE resource SET name='mladjo', type=2 WHERE id=2;");
 
             Assert.AreEqual("mladjo", response.Payload.Resource[0].Name);
 
