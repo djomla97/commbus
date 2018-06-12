@@ -1,6 +1,9 @@
 IF OBJECT_ID('dbo.resource', 'U') IS NOT NULL 
   DROP TABLE dbo.resource; 
 
+IF OBJECT_ID('dbo.test', 'U') IS NOT NULL 
+  DROP TABLE dbo.test;
+
 IF OBJECT_ID('dbo.connection', 'U') IS NOT NULL 
   DROP TABLE dbo.connection; 
 

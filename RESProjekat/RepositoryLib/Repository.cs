@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.IO;
 using Microsoft.SqlServer;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RepositoryLib
 {
@@ -22,8 +23,6 @@ namespace RepositoryLib
         private DataTable dataTable;            //
 
         private string connectionString;
-        //private string connectionString = @"Data Source=DESKTOP-GBOAIN9\NEWSQLEXPRESS;Initial Catalog=projekatdb;Integrated Security=True;Pooling=False";
-        //private string connectionString = @"Data Source = (local)\SQLEXPRESS;Initial Catalog = Projekat1Db; Integrated Security = True; Pooling=False";
         private SqlCommand sqlCommand2;         //
         private SqlDataAdapter dataAdapter2;    // Za pristup drugoj tabeli 'TypeTable'
         private DataTable dataTable2;           //
@@ -31,6 +30,8 @@ namespace RepositoryLib
         private SqlCommand sqlCommand3;         //
         private SqlDataAdapter dataAdapter3;    // Za vracanje novog
         private DataTable dataTable3;           //
+
+        private string scriptsPath;
 
         public Repository()
         {
@@ -46,33 +47,40 @@ namespace RepositoryLib
             xmlDocument.Load(@"..\..\..\config.xml");
             XmlNode sqlConnectionString = xmlDocument.DocumentElement.SelectSingleNode("/config/sqlconnectionstring");
             connectionString = sqlConnectionString.InnerText;
+            XmlNode scripts = xmlDocument.DocumentElement.SelectSingleNode("/config/scripts");
+            scriptsPath = scripts.InnerText;
         }
 
         private void InitDB() {
-            // drop tables
-            string dropScript = File.ReadAllText(@"..\..\..\drop_tables.sql");
+            // drop tables           
+            string dropScript = File.ReadAllText($@"{scriptsPath}\drop_tables.sql");
             sqlCommand = new SqlCommand(dropScript);
             sqlCommand.Connection = sqlConnection;
             sqlCommand.ExecuteNonQuery();
 
             // create tables - bitan raspored
-            string createScript = File.ReadAllText(@"..\..\..\create_connection.sql");
+            string createScript = File.ReadAllText($@"{scriptsPath}\create_connection.sql");
             sqlCommand = new SqlCommand(createScript);
             sqlCommand.Connection = sqlConnection;
             sqlCommand.ExecuteNonQuery();
 
-            createScript = File.ReadAllText(@"..\..\..\create_typetable.sql");
+            createScript = File.ReadAllText($@"{scriptsPath}\create_typetable.sql");
             sqlCommand = new SqlCommand(createScript);
             sqlCommand.Connection = sqlConnection;
             sqlCommand.ExecuteNonQuery();
 
-            createScript = File.ReadAllText(@"..\..\..\create_resource.sql");
+            createScript = File.ReadAllText($@"{scriptsPath}\create_resource.sql");
+            sqlCommand = new SqlCommand(createScript);
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.ExecuteNonQuery();
+
+            createScript = File.ReadAllText($@"{scriptsPath}\create_test.sql");
             sqlCommand = new SqlCommand(createScript);
             sqlCommand.Connection = sqlConnection;
             sqlCommand.ExecuteNonQuery();
 
             // insert
-            string insertScript = File.ReadAllText(@"..\..\..\insert_data.sql");
+            string insertScript = File.ReadAllText($@"{scriptsPath}\insert_data.sql");
             sqlCommand = new SqlCommand(insertScript);
             sqlCommand.Connection = sqlConnection;
             sqlCommand.ExecuteNonQuery();
