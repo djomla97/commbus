@@ -13,3 +13,10 @@ INSERT INTO TypeTable (title) VALUES ('Object');
 INSERT INTO resource (title, rname, description, type, connectedTo, connectedType) VALUES ('Male', 'Pera', 'Regular guy', 1, 4, 2);
 INSERT INTO resource (title, rname, description, type, connectedTo, connectedType) VALUES ('Dog', 'Snoopy', 'Golden retriever', 2, 5, 1);
 INSERT INTO resource (title, rname, description, type, connectedTo, connectedType) VALUES ('Gungan', 'Jar Jar Binks', 'Military Commander', 3, 2, 5);
+INSERT INTO resource (title, rname, description, type, connectedTo, connectedType) VALUES ('NullTest', 'NullName', 'NullDesc', null, null, null);
+
+
+INSERT INTO test (title, rname, description, connectedTo, connectedType) VALUES ('Male', 'Pera', 'Regular guy', 4, 2);
+INSERT INTO test (title, rname, description, connectedTo, connectedType) VALUES ('Dog', 'Snoopy', 'Golden retriever', 5, 1);
+INSERT INTO test (title, rname, description, connectedTo, connectedType) VALUES ('Gungan', 'Jar Jar Binks', 'Military Commander', 2, 5);
+INSERT INTO resource (title, rname, description, type, connectedTo, connectedType) VALUES ('NullTest', 'NullName', 'NullDesc', null, null, null);

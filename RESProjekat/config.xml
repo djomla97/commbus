@@ -1,3 +1,4 @@
 <config>
-	<sqlconnectionstring>Data Source = (local)\SQLEXPRESS;Initial Catalog = Projekat1Db; Integrated Security = True; Pooling=False</sqlconnectionstring>
+	<sqlconnectionstring>Data Source=DESKTOP-GBOAIN9\NEWSQLEXPRESS;Initial Catalog=projekatdb;Integrated Security=True;Pooling=False</sqlconnectionstring>
+	<scripts>C:\Users\Mladjo\Desktop\RES\projekat1_clone\RESProjekat</scripts>
 </config>
