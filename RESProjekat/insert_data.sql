@@ -3,6 +3,7 @@ INSERT INTO connection (one, two) VALUES (1,4);
 INSERT INTO connection (one, two) VALUES (3,2);
 INSERT INTO connection (one, two) VALUES (4,5);
 
+INSERT INTO TypeTable (title) VALUES ('Default');
 INSERT INTO TypeTable (title) VALUES ('Human');
 INSERT INTO TypeTable (title) VALUES ('Animal');
 INSERT INTO TypeTable (title) VALUES ('Alien');

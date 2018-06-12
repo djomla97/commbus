@@ -174,6 +174,36 @@ namespace RepositoryLib
             {
                 if(query.Contains("type"))
                 {
+                    // razdvojimo na tokene i dobijemo unutar zagrada koje vrednosti unosi
+                    string[] tokens = sqlQuery.Split('(');
+                    string[] columnNames = tokens[1].Split(')');
+                    string[] columns = columnNames[0].Split(',');
+
+                    // zatim pronadjemo koja je po redu (od 0) vrednost 'type'
+                    // a ako nema 'type' unesen onda je -1             
+                    int typeIndex = -1;
+                    for(int i = 0; i < columns.Length; i++)
+                    {
+                        if (columns[i].Contains("type"))
+                        {
+                            typeIndex = i;
+                            break;
+                        }
+                    }
+
+                    // sad kad imamo index onda samo preuzmemo iz VALUES(...) vrednost type
+                    int type = -1;
+                    if(typeIndex != -1)
+                    {
+                        string[] valueTokens = tokens[2].Split(')');
+                        string[] values = valueTokens[0].Split(',');
+                        type = Int32.Parse(values[typeIndex]);
+                    }
+                    else
+                    {
+                        // ovde postaviti type na default vrednost, ne znam tacno kako si ceo ovaj insert radio
+                    }
+
                     int idx = query.IndexOf("VALUES (") + 8;
                     string resultType = query.Substring(idx);
                     string[] result = resultType.Split(',');
@@ -186,7 +216,8 @@ namespace RepositoryLib
                     dataTable3 = new DataTable();
                     dataAdapter3.Fill(dataTable3);
 
-                    if(int.Parse(lastResult[0]) > dataTable3.Rows.Count)
+                    // ovde sam izmenio da proveri vrednost type
+                    if(type > dataTable3.Rows.Count || type == -1)
                     {
                         response.Status = "Ne postoji takav type";
                         response.StatusCode = StatusCode.REJECTED_CODE;
