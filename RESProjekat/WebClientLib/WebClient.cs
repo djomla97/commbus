@@ -275,7 +275,10 @@ namespace WebClientLib
                         }
                         else
                         {
-                            parsedRequest.Query = parsedRequest.Query.Remove(parsedRequest.Query.Length - 1, 1); // ukloni ; sa kraja
+                            if(parsedQueries[i] != null)
+                            {
+                                parsedRequest.Query = parsedRequest.Query.Remove(parsedRequest.Query.Length - 1, 1); // ukloni ; sa kraja
+                            }
                             break;
                         }
                     }
@@ -288,7 +291,7 @@ namespace WebClientLib
                     parsedRequest.Fields = null;
                 }
             }
-
+            
             return parsedRequest;
 
         }

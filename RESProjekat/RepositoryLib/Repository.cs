@@ -123,41 +123,51 @@ namespace RepositoryLib
                 {
                     response.Payload.Resource.Add(new Resource(new ResourceType()));
 
+                    // ovde sam ti dodao proveru radi Fields, mozda ne zeli nesto od ovog kao povratnu vrednost
+                    // pa i ne vrati u dataTable
+                    if (dataTable.Columns.Contains("id"))
+                        response.Payload.Resource[i].ID = int.Parse(dataTable.Rows[i]["id"].ToString());
+                    if(dataTable.Columns.Contains("rname"))
+                        response.Payload.Resource[i].Name = dataTable.Rows[i]["rname"].ToString();
+                    if(dataTable.Columns.Contains("description"))
+                        response.Payload.Resource[i].Description = dataTable.Rows[i]["description"].ToString();
+                    if (dataTable.Columns.Contains("title"))
+                        response.Payload.Resource[i].Title = dataTable.Rows[i]["title"].ToString();
 
-                    response.Payload.Resource[i].ID = int.Parse(dataTable.Rows[i]["id"].ToString());
-                    response.Payload.Resource[i].Name = dataTable.Rows[i]["rname"].ToString();
-                    response.Payload.Resource[i].Description = dataTable.Rows[i]["description"].ToString();
-                    response.Payload.Resource[i].Title = dataTable.Rows[i]["title"].ToString();
-
-                    if (dataTable.Rows[i]["type"].ToString().ToLower() != "null" && dataTable.Rows[i]["type"].ToString() != "")
+                    // dodatna provera za type
+                    if(dataTable.Columns.Contains("type"))
                     {
-                        int secondId = int.Parse(dataTable.Rows[i]["type"].ToString()); //the id we are looking in the second table
-                        sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
+                        if (dataTable.Rows[i]["type"].ToString().ToLower() != "null" && dataTable.Rows[i]["type"].ToString() != "")
+                        {
+                            int secondId = int.Parse(dataTable.Rows[i]["type"].ToString()); //the id we are looking in the second table
+                            sqlCommand2 = new SqlCommand(String.Format(secondTable + secondId)); //
 
-                        sqlCommand2.Connection = sqlConnection;
+                            sqlCommand2.Connection = sqlConnection;
 
-                        dataAdapter2 = new SqlDataAdapter(sqlCommand2);
-                        dataTable2 = new DataTable();
-                        dataAdapter2.Fill(dataTable2);
+                            dataAdapter2 = new SqlDataAdapter(sqlCommand2);
+                            dataTable2 = new DataTable();
+                            dataAdapter2.Fill(dataTable2);
 
 
-                        response.Payload.Resource[i].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
-                        response.Payload.Resource[i].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                            response.Payload.Resource[i].Type.ID = int.Parse(dataTable2.Rows[0]["id"].ToString());
+                            response.Payload.Resource[i].Type.Title = dataTable2.Rows[0]["title"].ToString();
+                        }
+                        else
+                        {
+                            sqlCommand = new SqlCommand("SELECT * FROM TypeTable WHERE id=1"); //ako nije naveo type, stavljamo da je 1
+                            sqlCommand.Connection = sqlConnection;
+
+                            dataAdapter = new SqlDataAdapter(sqlCommand);
+                            dataTable = new DataTable();
+                            dataAdapter.Fill(dataTable);
+
+                            response.Payload.Resource[0].Type.ID = 1;
+                            response.Payload.Resource[0].Type.Title = dataTable.Rows[0]["title"].ToString();
+
+
+                        }
                     }
-                    else
-                    {
-                        sqlCommand = new SqlCommand("SELECT * FROM TypeTable WHERE id=1"); //ako nije naveo type, stavljamo da je 1
-                        sqlCommand.Connection = sqlConnection;
-
-                        dataAdapter = new SqlDataAdapter(sqlCommand);
-                        dataTable = new DataTable();
-                        dataAdapter.Fill(dataTable);
-
-                        response.Payload.Resource[0].Type.ID = 1;
-                        response.Payload.Resource[0].Type.Title = dataTable.Rows[0]["title"].ToString();
-
-
-                    }
+                    
 
                     //  response.StatusCode = StatusCode.SUCCESS_CODE;
                     //  response.Status = "SUCCESS";
@@ -445,7 +455,7 @@ namespace RepositoryLib
                 //     sqlCommand2.ExecuteNonQuery();      //brisemo iz prvo iz TypeTable
                 //   }
 
-
+          
                 try
                 {
                     sqlCommand.ExecuteNonQuery(); //izvrsi
