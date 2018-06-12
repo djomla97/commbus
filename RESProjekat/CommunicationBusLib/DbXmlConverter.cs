@@ -20,7 +20,7 @@ namespace CommunicationBusLib
         {
             StringBuilder sqlRequest = new StringBuilder();
             request = request.Replace("\r\n", "");
-            request = request.Replace(" ", "");
+            //request = request.Replace(" ", "");
 
             // pozicije stringova
             int firstIndexOfVerb = request.IndexOf("<Verb>") + 6;

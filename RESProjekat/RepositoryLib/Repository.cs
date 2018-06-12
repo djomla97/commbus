@@ -106,15 +106,19 @@ namespace RepositoryLib
                 }
                 catch
                 {
-                    response.Status = "Lose ste uneli podatke";
-                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    response.Payload.Resource = null;
+                    response.Payload.ErrorMessage = "Database rejected that command. Bad command.";
+                    response.Status = Status.REJECTED.ToString();
+                    response.StatusCode = StatusCode.REJECTED_CODE;
                     return response;
                 }
                 
 
                 if(dataTable.Rows.Count == 0)
                 {
-                    response.Status = "Ne postoji u tabeli";
+                    response.Payload.Resource = null;
+                    response.Payload.ErrorMessage = "Nothing was found.";
+                    response.Status = Status.REJECTED.ToString();
                     response.StatusCode = StatusCode.REJECTED_CODE;
                     return response;
                 }
@@ -229,7 +233,9 @@ namespace RepositoryLib
                     // ovde sam izmenio da proveri vrednost type
                     if(type > dataTable3.Rows.Count || type == -1)
                     {
-                        response.Status = "Ne postoji takav type";
+                        response.Payload.Resource = null;
+                        response.Payload.ErrorMessage = "There is no type with that ID.";
+                        response.Status = Status.REJECTED.ToString();
                         response.StatusCode = StatusCode.REJECTED_CODE;
                         return response;
                     }
@@ -241,8 +247,10 @@ namespace RepositoryLib
                 }
                 catch
                 {
-                    response.Status = "Lose ste uneli podatke";
-                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    response.Payload.Resource = null;
+                    response.Payload.ErrorMessage = "Database rejected that command. Bad command.";
+                    response.Status = Status.REJECTED.ToString();
+                    response.StatusCode = StatusCode.REJECTED_CODE;
                     return response;
                 }
 
@@ -343,8 +351,10 @@ namespace RepositoryLib
                 }
                 catch
                 {
-                    response.Status = "Lose ste uneli podatke";
-                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    response.Payload.Resource = null;
+                    response.Payload.ErrorMessage = "Database rejected that command. Bad command.";
+                    response.Status = Status.REJECTED.ToString();
+                    response.StatusCode = StatusCode.REJECTED_CODE;
                     return response;
                 }
 
@@ -361,7 +371,9 @@ namespace RepositoryLib
                 dataAdapter3.Fill(dataTable3);
                 if(dataTable3.Rows.Count == 0)
                 {
-                    response.Status = "Ne postoji taj id u tabeli";
+                    response.Payload.Resource = null;
+                    response.Payload.ErrorMessage = "Nothing was found.";
+                    response.Status = Status.REJECTED.ToString();
                     response.StatusCode = StatusCode.REJECTED_CODE;
                     return response;
                 }
@@ -462,8 +474,10 @@ namespace RepositoryLib
                 }
                 catch
                 {
-                    response.Status = "Lose ste uneli podatke";
-                    response.StatusCode = StatusCode.BAD_FORMAT_CODE;
+                    response.Payload.Resource = null;
+                    response.Payload.ErrorMessage = "Database rejected that command. Bad command.";
+                    response.Status = Status.REJECTED.ToString();
+                    response.StatusCode = StatusCode.REJECTED_CODE;
                     return response;
                 }
 

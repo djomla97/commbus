@@ -103,6 +103,10 @@ namespace WebClientLib
             {
                 method = requestSplit[0];
                 table = requestSplit[1];
+
+                if (!table.Contains("/"))                
+                    return parsedRequest;
+
             }
             catch (Exception)
             {
@@ -153,8 +157,40 @@ namespace WebClientLib
 
                     for (int i = 2; i < requestSplit.Length; i++)
                     {
+                        if (requestSplit[i].ToLower().Contains("description")) {
+                            jsonQuery += requestSplit[i];
+                            i++;
+                            int m = i;
+                            for(m = i; m < requestSplit.Length; m++)
+                            {
+                                if (requestSplit[m].Contains("\""))
+                                {
+                                    jsonQuery += requestSplit[m];
+                                    break;
+                                }
+                                else
+                                {
+                                    jsonQuery += " " + requestSplit[m] + " ";
+                                }
+                                    
+                            }
+                            i = m+1;
+                        }
+
+                        if (i >= requestSplit.Length)
+                            break;
+
                         jsonQuery += requestSplit[i];
                     }
+
+                    if(!jsonQuery.Contains("{") || !jsonQuery.Contains("}"))
+                    {
+                        parsedRequest.Noun = null;
+                        parsedRequest.Query = null;
+                        parsedRequest.Fields = null;
+                        return parsedRequest;
+                    }
+
 
                     jsonQuery = jsonQuery.Remove(0, 1); // uklonimo { 
                     jsonQuery = jsonQuery.Remove(jsonQuery.Length - 1, 1); // uklonimo }
