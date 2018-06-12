@@ -3,16 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using RepositoryLib;
 using SharedResources;
 using SharedResources.Interfaces;
+using WebClientLib;
 
 namespace RepositoryTest
 {
     [TestFixture]
     public class RepositoryTests
     {
+
+        private Repository repo = null;
+        private Mock<IWebClient> webClient;
+
+        [SetUp]
+        public void SetUp()
+        {
+            repo = new Repository();
+            
+          
+            
+        }
 
         [Test]
         public void TestSelect()

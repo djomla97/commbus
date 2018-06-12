@@ -78,6 +78,10 @@
       <Project>{AD8B6608-765B-4936-9843-C89526B77157}</Project>
       <Name>SharedResources</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebClientLib\WebClientLib.csproj">
+      <Project>{04B00183-974A-4A69-94C6-6631039256AC}</Project>
+      <Name>WebClientLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
