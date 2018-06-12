@@ -95,8 +95,11 @@ namespace CommunicationBusLib
                         }
                         else
                         {
-                            id = noun.Split('/')[2];
-                            sqlRequest.Append($"WHERE id={id};");
+                            if(noun.Split('/').Length > 2)
+                            {
+                                id = noun.Split('/')[2];
+                                sqlRequest.Append($"WHERE id={id};");
+                            }
                         }
                     }
                     else
