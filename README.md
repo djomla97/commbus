@@ -1,6 +1,5 @@
-# Communication bus
-Projekat za predmet RES, FTN 2017/18 
+# Communication bus projekat
+Projekat za predmet RES 2017/18, radjen u timu od dva studenta. 
 
-## Specifikacija projekta
+Specifikacija se nalazi [ovde](https://github.com/djomla97/commbus/blob/master/Projekat%201.pdf), a TFS se moze pogledati [ovde](https://djomlam.visualstudio.com/RES_Projekat1)
 
-Specifikacija se nalazi [a ovde](https://github.com/djomla97/commbus/blob/master/Projekat%201.pdf)
